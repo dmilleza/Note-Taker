@@ -1,8 +1,8 @@
 const app = require("express").Router();
 const fs = require("fs");
 const uniqid = require("uniqid");
-// const db = require("../db/db.json");
 
+// GET route
 app.get("/notes", (req, res) => {
   // Read the db.json file using readFileSync, don't run without sync.
   fs.readFile("./Develop/db/db.json", "utf8", (err, data) => {
@@ -12,6 +12,7 @@ app.get("/notes", (req, res) => {
   });
 });
 
+// POST route
 app.post("/notes", (req, res) => {
   // store new notes from body with req.body and id into an object
   const newNote = {
@@ -23,7 +24,6 @@ app.post("/notes", (req, res) => {
 
   //  Read data from JSON file
   let data = fs.readFileSync("./Develop/db/db.json", "utf8");
-
   const dataJSON = JSON.parse(data);
 
   // Pushed new note in notes file 'db.json'
@@ -47,6 +47,7 @@ app.post("/notes", (req, res) => {
   res.json(data);
 });
 
+// DELETE route
 app.delete("/notes/:id", function (req, res) {
   fs.readFile("./Develop/db/db.json", "utf8", (err, data) => {
     if (err) throw err;
@@ -54,6 +55,8 @@ app.delete("/notes/:id", function (req, res) {
     const id = req.params.id;
     const indexOfNote = notes.findIndex((x) => x.id === parseInt(id));
     notes.splice(indexOfNote, 1);
+
+    // after deleting note, render updated note list
     fs.writeFile("./Develop/db/db.json", JSON.stringify(notes, "\t"), (err) => {
       if (err) throw err;
       return true;
